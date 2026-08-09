@@ -27,7 +27,7 @@
   };
   homebrew = {
     enable = true;
-    onActivation.cleanup = "zap";  # remove anything not listed here
+    onActivation.cleanup = "none";  # essentials only; never uninstall machine-specific extras
     onActivation.autoUpdate = true;
     onActivation.extraFlags = [ "--force" ];
     brews = [

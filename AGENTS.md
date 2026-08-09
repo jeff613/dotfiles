@@ -2,7 +2,7 @@
 
 Deliberate decisions in this repo - do NOT silently revert them:
 
-- `homebrew.onActivation.cleanup = "zap"` in `configuration.nix` is intentional. It forces the good habit of declaring every Homebrew package in the Nix config instead of installing things ad-hoc, which keeps the machine reproducible. Do not soften it to `uninstall` or `none`. Users are warned about its effect in README.md; this note is for anyone tempted to change the setting itself.
+- `homebrew.onActivation.cleanup = "none"` in `configuration.nix` is intentional (changed from upstream's `"zap"` on 2026-08-08). The declared brews/casks are the shared essentials every machine gets; each machine may additionally install its own Homebrew packages ad-hoc, and the switch must never uninstall them. Do not tighten this to `uninstall` or `zap`.
 
 ## Maintaining this file
 

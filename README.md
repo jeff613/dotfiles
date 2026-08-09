@@ -14,7 +14,7 @@ Running the switch builds:
 - Shell (zsh, aliases, starship prompt)
 - Editor (Neovim config with the rose-pine moon theme)
 - Apps (Ghostty, VS Code, Chrome, Claude Code as Homebrew casks)
-- Agent configs (Claude, Codex, opencode all share one AGENTS.md)
+- Agent configs (Claude, Codex, opencode all share one AGENTS.md; my global Claude skills come along too)
 - Pi (installed via Homebrew) with a theme, local extensions, generic UI settings and model overrides, plus three deliberately pinned third-party Pi packages
 
 ## Prerequisites
@@ -73,6 +73,22 @@ Edit the config files in place, then apply:
 That's it.
 No separate build-and-copy step.
 
+## Keeping machines in sync
+
+Git is the sync mechanism - nothing syncs automatically.
+
+- `configuration.nix`, `home.nix`, and `flake.nix` are only read at rebuild time.
+  Change one, apply it with `./rebuild.sh`, then commit and push.
+  On the other machine: `git pull && ./rebuild.sh`.
+- The files under `home/` are symlinked into place, so editing your live config is already editing this repo.
+  Commit and push; the other machine only needs `git pull` (no rebuild) to pick the change up.
+- The config never learns from the machine.
+  A setting flipped in System Settings or a package installed ad-hoc with `brew install` is not captured here, and the next switch re-asserts any declared value right over a UI change - so UI changes to declared settings are temporary.
+
+Rule of thumb: should every machine get this change?
+Yes - make it in this repo and push.
+No - change it in the UI or `brew install` it by hand, and it stays machine-specific.
+
 ## Make it yours
 
 This repo is mine.
@@ -96,10 +112,9 @@ programs.git = {
 };
 ```
 
-**Homebrew cleanup warning:** `configuration.nix` sets `homebrew.onActivation.cleanup = "zap"`.
-That means every time you switch, Homebrew removes any package or cask on your machine that isn't listed in the `brews` and `casks` arrays in `configuration.nix`.
-If you already have Homebrew stuff installed that isn't in that list, the first switch will uninstall it.
-Read through `brews` and `casks` before you run `bootstrap.sh` or `rebuild.sh` for the first time, and add anything you want to keep.
+**Homebrew philosophy:** `configuration.nix` sets `homebrew.onActivation.cleanup = "none"`.
+The declared `brews` and `casks` are the shared essentials every machine gets; anything you install ad-hoc with `brew install` on a particular machine is left alone by the switch, so each machine can carry its own extras.
+The trade-off is that only the declared essentials are reproducible on a new machine - ad-hoc extras are not.
 
 **About `herdr`:** it's in the `brews` list.
 It's a real public Homebrew formula (`brew info herdr` finds it in homebrew-core, no tap needed), so it will install fine.
