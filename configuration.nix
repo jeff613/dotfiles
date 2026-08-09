@@ -14,17 +14,13 @@
   system.stateVersion = 6;
   system.defaults = {
     NSGlobalDomain = {
-      AppleInterfaceStyle = "Dark";
-      KeyRepeat = 2;          # fast key repeat
-      InitialKeyRepeat = 15;  # short delay before repeat
-      _HIHideMenuBar = true;  # auto-hide the menu bar
+      AppleInterfaceStyleSwitchesAutomatically = true;  # light by day, dark by night
       AppleShowAllExtensions = true;
+      "com.apple.swipescrolldirection" = false;  # reversed (non-natural) scrolling
     };
-    dock.autohide = true;
-    finder.FXPreferredViewStyle = "Nlsv";  # list view by default
-    finder.CreateDesktop = false;          # clean desktop
-    trackpad.Clicking = true;              # tap to click
   };
+  # Keep HM per-user packages on PATH via the managed /etc/zshrc.
+  programs.zsh.enable = true;
   nix-homebrew = {
     enable = true;
     inherit user;
@@ -36,9 +32,12 @@
     onActivation.extraFlags = [ "--force" ];
     brews = [
       "herdr"
+      "pi-coding-agent"
     ];
     casks = [
-      "wezterm"
+      "ghostty"
+      "visual-studio-code"
+      "google-chrome"
       "claude-code"
     ];
   };

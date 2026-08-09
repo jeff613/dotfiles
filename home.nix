@@ -16,6 +16,9 @@ in
     jq        # json on the command line
     lazygit
     neovim
+    gh        # github cli
+    tmux
+    nodejs_22 # node + npm
     # the font everything renders in
     nerd-fonts.hack
   ];
@@ -26,17 +29,9 @@ in
     enable = true;
     autosuggestion.enable = true;      # ghost text from history
     syntaxHighlighting.enable = true;  # commands turn green when valid
-    initContent = ''
-      bindkey '^f' autosuggest-accept
-    '';
     shellAliases = {
-      ".." = "cd ..";
-      add = "git add .";
-      push = "git push";
-      pull = "git pull";
-      m = "git switch main";
-      cc = "claude --dangerously-skip-permissions";
-      co = "codex --full-auto";
+      cc = "claude";
+      co = "codex";
     };
   };
 
@@ -54,14 +49,14 @@ in
   };
 
   # Edit-in-place: the real file stays in my repo, ~/.config just points at it.
-  home.file.".config/wezterm".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/wezterm";
   home.file.".config/nvim".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/nvim";
   home.file.".config/herdr".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/herdr";
   home.file.".claude/settings.json".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.claude/settings.json";
+  home.file.".claude/statusline-command.sh".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.claude/statusline-command.sh";
 
   # Keep Pi's credential and runtime state local by linking only authored files and directories.
   home.file.".pi/agent/themes".source =
@@ -73,6 +68,8 @@ in
   home.file.".pi/agent/settings.json".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.pi/agent/settings.json";
 
+  home.file.".agents/AGENTS.md".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
   home.file.".claude/CLAUDE.md".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
   home.file.".codex/AGENTS.md".source =

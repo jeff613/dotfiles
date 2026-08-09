@@ -1,28 +1,21 @@
 # dotfiles
 
-Watch the walkthrough: https://youtu.be/5N-okeDdIuI
-
 My personal Mac setup, managed with nix-darwin and home-manager.
 One repo, one command, and a fresh Mac ends up configured the same way every time.
 
-## Contributing / Using This Repo
-
-These are my personal dotfiles, shared publicly so people can read them, learn from them, and fork them freely.
-Feature requests and pull requests are not accepted here, and PRs are auto-closed.
-If you find a bug, please open a GitHub Issue using the bug report template.
+Forked from [Kun Chen's dotfiles](https://github.com/kunchenguid/dotfiles) (video walkthrough: https://youtu.be/5N-okeDdIuI), then adapted to my own tools and habits.
 
 ## What you get
 
 Running the switch builds:
 
-- System settings (dark mode, key repeat, dock, Finder, trackpad)
-- Homebrew apps (casks and CLI tools)
-- Nix user packages (ripgrep, fd, fzf, jq, lazygit, Neovim, Hack Nerd Font)
+- System settings (auto light/dark mode, file extensions shown, reversed scrolling)
+- Nix user packages (ripgrep, fd, fzf, jq, lazygit, Neovim, gh, tmux, Node 22, Hack Nerd Font)
 - Shell (zsh, aliases, starship prompt)
 - Editor (Neovim config with the rose-pine moon theme)
-- Terminal (WezTerm config with the rose-pine moon theme and dimmed unfocused windows)
+- Apps (Ghostty, VS Code, Chrome, Claude Code as Homebrew casks)
 - Agent configs (Claude, Codex, opencode all share one AGENTS.md)
-- Optional Pi theme and local extensions, generic UI settings and model overrides, plus two deliberately pinned third-party Pi packages
+- Pi (installed via Homebrew) with a theme, local extensions, generic UI settings and model overrides, plus three deliberately pinned third-party Pi packages
 
 ## Prerequisites
 
@@ -35,7 +28,7 @@ Running the switch builds:
 On a brand new Mac, from a bare clone of this repo:
 
 ```sh
-git clone https://github.com/kunchenguid/dotfiles.git
+git clone https://github.com/jeff613/dotfiles.git
 cd dotfiles
 ```
 
@@ -85,7 +78,7 @@ No separate build-and-copy step.
 This repo is mine.
 If you clone it, review these before you run `bootstrap.sh`:
 
-- **Username**: run `./bootstrap.sh` (it detects your macOS username and offers to set it) OR change the single `user = "kunchen"` line in `flake.nix`.
+- **Username**: run `./bootstrap.sh` (it detects your macOS username and offers to set it) OR change the single `user = "jeff613"` line in `flake.nix`.
   Everything else (`configuration.nix`, `home.nix`, home directory paths) is threaded from that one variable.
 - **Host label** `"mac"`, in three places: `flake.nix` (the `darwinConfigurations."mac"` name), `rebuild.sh:5` (the `#mac` at the end of the flake reference), and `bootstrap.sh`'s first-switch command (also `#mac`).
   All three have to match.
@@ -98,10 +91,8 @@ If you'd rather manage that declaratively, add this back to `home.nix` with your
 ```nix
 programs.git = {
   enable = true;
-  settings.user = {
-    name = "Your Name";
-    email = "you@example.com";
-  };
+  userName = "Your Name";
+  userEmail = "you@example.com";
 };
 ```
 
@@ -116,20 +107,22 @@ If you don't use it, just remove it from `brews` in your copy.
 
 **Heads-up:**
 
-- `home/AGENTS.md` is my personal agent policy, and `home.nix` installs it for Claude, Codex, and opencode.
+- `home/AGENTS.md` is my personal agent policy, and `home.nix` installs it for Claude, Codex, and opencode (plus the `~/.agents/AGENTS.md` user-level convention).
   If you clone this repo, you'd silently inherit my agent instructions - edit or delete `home/AGENTS.md` if you don't want that.
-- The `cc` and `co` shell aliases in `home.nix` are high-agency shortcuts: `claude --dangerously-skip-permissions` and `codex --full-auto`.
-  They're convenient for me, but know what they do before you use them.
+- `home/.claude/settings.json` is my personal Claude Code config (hooks, plugins, statusline).
+  Same deal: review it before adopting it.
 
 ## Repo tour
 
 - `flake.nix` - the entry point.
   Wires up nixpkgs, nix-darwin, home-manager, and nix-homebrew, and declares the `mac` machine.
+- `bootstrap.sh` - first-time setup on a fresh machine: installs Determinate Nix, symlinks the repo to `~/.dotfiles`, checks the username, runs the first switch.
 - `configuration.nix` - system-level config: macOS defaults, Homebrew.
 - `home.nix` - user-level config: shell, packages, prompt, and the symlinks described below.
 - `rebuild.sh` - re-applies the config after the first switch.
   Run this every time you make a change.
 - `home/` - the actual config files that get symlinked into place; the sections below explain the shared symlink model and Pi's narrower selective setup.
+- `tests/` - shell tests for the Pi Calm extension and repo invariants.
 
 ## How the symlinks work
 
@@ -139,11 +132,7 @@ You only run `./rebuild.sh` when you change something that isn't just a symlinke
 
 ## Optional Pi configuration
 
-Pi is an opt-in CLI, not a dependency this repository vendors. Install it from its owner with the [official Pi instructions](https://pi.dev), for example:
-
-```sh
-npm install -g --ignore-scripts @earendil-works/pi-coding-agent
-```
+Pi is installed declaratively: `configuration.nix` declares the `pi-coding-agent` Homebrew formula, so the switch installs and updates it. (Homebrew rather than Nix because the nixpkgs 26.05 build lags at 0.75.4, which predates the pinned-package auto-install behavior described below.)
 
 [Pi Launcher](https://github.com/kunchenguid/homebrew-tap) is also optional and installed from its owner, not declared by this config:
 
@@ -161,22 +150,23 @@ When enabled, Calm hides collapsed thinking and the call/result shells for Pi's 
 
 Calm never changes prompts, tool execution, model context, session data, or ordering. `/share` and `/export` use the complete stock transcript. Generic custom tools, images, and unsupported Pi transcript classes deliberately remain visible because Pi has no safe general-purpose transcript filter. If a future Pi release no longer exports the exact collapsed-thinking rendering seam, Calm logs one diagnostic and leaves only that adapter disabled; all other behavior remains available.
 
-Pi's package system declares two third-party sources in the linked global `settings.json`:
+Pi's package system declares three third-party sources in the linked global `settings.json`:
 
+- `npm:pi-web-access@0.14.0` - the exact public npm release of the Pi web-access extension.
 - `npm:@ryan_nookpi/pi-extension-codex-fast-mode@0.2.6` - the exact public npm release from `ryan_nookpi`.
 - `git:github.com/algal/pi-openai-server-compaction@c6d593087709e9481223dc6c6c2269b371b5e055` - the exact public `algal` commit for experimental OpenAI server-side compaction.
 
 The version and commit are immutable pins, so Pi does not move them during package updates. Deliberate updates require a new source and security audit, followed by an explicit pin change in `home/.pi/agent/settings.json`. On Pi 0.82.0, global settings declarations install missing pinned packages automatically at startup. No one-time install command is required. Pi keeps the downloaded npm and git package trees in its own unmanaged `~/.pi/agent/npm` and `~/.pi/agent/git` runtime directories, outside Home Manager and Git tracking.
 
-Both packages execute with your full user permissions and must be trusted like any other executable code. The compaction package is experimental, sends the relevant OpenAI compaction and continuity data to OpenAI, and upstream declares the stale peer range `>=0.80.9 <0.81.0`; this exact immutable ref was locally proven to load and perform remote compaction on Pi 0.82.0. Do not treat that proof as a guarantee for a different Pi version or a different package ref.
+All three packages execute with your full user permissions and must be trusted like any other executable code. The compaction package is experimental, sends the relevant OpenAI compaction and continuity data to OpenAI, and upstream declares the stale peer range `>=0.80.9 <0.81.0`; this exact immutable ref was locally proven to load and perform remote compaction on Pi 0.82.0. Do not treat that proof as a guarantee for a different Pi version or a different package ref.
 
-Home Manager deliberately does not manage `~/.pi/agent` itself, or Pi authentication, sessions, trust decisions, caches, npm/git package trees, or any other runtime state. The model overrides contain no credentials or endpoint settings, do not choose a default model, and only take effect after you authenticate Pi yourself. This remains an additive post-video layer: it does not install Pi, a launcher, or package source code into this repository.
+Home Manager deliberately does not manage `~/.pi/agent` itself, or Pi authentication, sessions, trust decisions, caches, npm/git package trees, or any other runtime state. The model overrides contain no credentials or endpoint settings, do not choose a default model, and only take effect after you authenticate Pi yourself. This remains an additive post-video layer: it does not install a launcher or package source code into this repository.
 
 ## Notes
 
 The first time you launch `nvim`, it bootstraps [lazy.nvim](https://github.com/folke/lazy.nvim) by cloning plugins from GitHub.
 That needs network access once; after that it's offline.
-Neovim and WezTerm both use the rose-pine moon theme.
+Neovim uses the rose-pine moon theme.
 Neovim keeps italics off and uses a transparent background on macOS, Windows, and WSL so it matches the terminal setup.
 
 ## License
