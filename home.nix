@@ -29,6 +29,11 @@ in
     enable = true;
     autosuggestion.enable = true;      # ghost text from history
     syntaxHighlighting.enable = true;  # commands turn green when valid
+    initContent = ''
+      export PATH="$HOME/.local/bin:$PATH"
+      # Machine-specific shell extras stay out of this repo.
+      [ -f ~/.zshrc.local ] && source ~/.zshrc.local
+    '';
     shellAliases = {
       cc = "claude";
       co = "codex";
