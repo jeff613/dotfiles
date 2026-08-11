@@ -151,11 +151,14 @@ You only run `./rebuild.sh` when you change something that isn't just a symlinke
 
 Two things deliberately do not live here:
 
-- **Skills that are their own repo.** They stay independently versioned and are gitignored here; clone them on a new machine:
+- **Skills that are their own project.** They live in `~/Projects/<name>` and this repo tracks only a symlink to them, so they keep their own git history and release flow.
+  The symlink comes along with this repo; clone the project itself on a new machine and the skill wires up:
 
   ```sh
-  git clone https://github.com/jeff613/gobble.git ~/.claude/skills/gobble
+  git clone https://github.com/jeff613/gobble.git ~/Projects/gobble
   ```
+
+  Until you clone it, the symlink simply dangles and the skill is unavailable.
 
 - **Plugins.** They are declared in `home/.claude/settings.json` under `enabledPlugins`, but a fresh machine does not install them from that declaration alone.
   Run `/plugin install <name>@claude-plugins-official` once per machine for each of them.
