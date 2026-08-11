@@ -147,21 +147,24 @@ You only run `./rebuild.sh` when you change something that isn't just a symlinke
 
 ## Claude skills and plugins
 
-`~/.claude/skills` is symlinked to `home/.claude/skills`, so a skill that is just a `SKILL.md` lives in this repo and syncs like any other config.
+`~/.claude/skills` is symlinked to `home/.claude/skills`, so every skill in this repo is live on every machine.
 
-Two things deliberately do not live here:
+Skills are **developed** in their own project checkout and **published** here when they are ready to use.
+Publishing means copying in only what the skill needs at runtime - its `SKILL.md` plus any scripts or reference files that `SKILL.md` actually calls.
+Tests, design notes, READMEs, and the project's own agent instructions stay in the project and never land here.
+No symlinks: a published skill is a plain copy, so the repo is self-contained and a fresh machine needs nothing cloned.
 
-- **Skills that are their own project.** They live in `~/Projects/<name>` and this repo tracks only a symlink to them, so they keep their own git history and release flow.
-  The symlink comes along with this repo; clone the project itself on a new machine and the skill wires up:
+For example `gobble` is developed at `~/Projects/gobble`, and publishing it is:
 
-  ```sh
-  git clone https://github.com/jeff613/gobble.git ~/Projects/gobble
-  ```
+```sh
+cp ~/Projects/gobble/SKILL.md home/.claude/skills/gobble/SKILL.md
+cp ~/Projects/gobble/scripts/check-usage.sh home/.claude/skills/gobble/scripts/
+```
 
-  Until you clone it, the symlink simply dangles and the skill is unavailable.
+Re-run the copy to ship an update, then commit and push.
 
-- **Plugins.** They are declared in `home/.claude/settings.json` under `enabledPlugins`, but a fresh machine does not install them from that declaration alone.
-  Run `/plugin install <name>@claude-plugins-official` once per machine for each of them.
+**Plugins** are declared in `home/.claude/settings.json` under `enabledPlugins`, but a fresh machine does not install them from that declaration alone.
+Run `/plugin install <name>@claude-plugins-official` once per machine for each of them.
 
 ## Optional Pi configuration
 
