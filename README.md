@@ -14,7 +14,7 @@ Running the switch builds:
 - Shell (zsh, aliases, starship prompt)
 - Editor (Neovim config with the rose-pine moon theme)
 - Apps (Ghostty, VS Code, Chrome, Claude Code as Homebrew casks)
-- Agent configs (Claude, Codex, opencode all share one AGENTS.md)
+- Agent configs (Claude, Codex, opencode all share one AGENTS.md; my global Claude skills come along too)
 - Pi (installed via Homebrew) with a theme, local extensions, generic UI settings and model overrides, plus three deliberately pinned third-party Pi packages
 
 ## Prerequisites
@@ -147,10 +147,20 @@ You only run `./rebuild.sh` when you change something that isn't just a symlinke
 
 ## Claude skills and plugins
 
-Neither is managed here yet.
+`~/.claude/skills` is symlinked to `home/.claude/skills`, so a skill that is just a `SKILL.md` lives in this repo and syncs like any other config.
 
-- **Skills** in `~/.claude/skills` stay machine-local for now; how to sync them across machines is still undecided.
-- **Plugins** are declared in `home/.claude/settings.json` under `enabledPlugins`, but a fresh machine does not install them from that declaration alone.
+Two things deliberately do not live here:
+
+- **Skills that are their own project.** They live in `~/Projects/<name>` and this repo tracks only a symlink to them, so they keep their own git history and release flow.
+  The symlink comes along with this repo; clone the project itself on a new machine and the skill wires up:
+
+  ```sh
+  git clone https://github.com/jeff613/gobble.git ~/Projects/gobble
+  ```
+
+  Until you clone it, the symlink simply dangles and the skill is unavailable.
+
+- **Plugins.** They are declared in `home/.claude/settings.json` under `enabledPlugins`, but a fresh machine does not install them from that declaration alone.
   Run `/plugin install <name>@claude-plugins-official` once per machine for each of them.
 
 ## Optional Pi configuration
