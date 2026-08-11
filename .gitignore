@@ -16,3 +16,6 @@ result-*
 
 # Pi Calm is a runtime toggle; its local state file is never tracked
 /home/.pi/agent/calm
+
+# Skills that are their own repo: track the pointer in README, not the content
+/home/.claude/skills/gobble/

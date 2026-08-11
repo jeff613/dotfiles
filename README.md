@@ -145,6 +145,21 @@ The files under `home/` are the real files - editing them here is editing your l
 `home.nix` uses `mkOutOfStoreSymlink` to point paths like `~/.config/nvim` straight at `home/.config/nvim` in this repo, so the two never drift out of sync.
 You only run `./rebuild.sh` when you change something that isn't just a symlinked file, like a package list or a system default.
 
+## Claude skills and plugins
+
+`~/.claude/skills` is symlinked to `home/.claude/skills`, so a skill that is just a `SKILL.md` lives in this repo and syncs like any other config.
+
+Two things deliberately do not live here:
+
+- **Skills that are their own repo.** They stay independently versioned and are gitignored here; clone them on a new machine:
+
+  ```sh
+  git clone https://github.com/jeff613/gobble.git ~/.claude/skills/gobble
+  ```
+
+- **Plugins.** They are declared in `home/.claude/settings.json` under `enabledPlugins`, but a fresh machine does not install them from that declaration alone.
+  Run `/plugin install <name>@claude-plugins-official` once per machine for each of them.
+
 ## Optional Pi configuration
 
 Pi is installed declaratively: `configuration.nix` declares the `pi-coding-agent` Homebrew formula, so the switch installs and updates it. (Homebrew rather than Nix because the nixpkgs 26.05 build lags at 0.75.4, which predates the pinned-package auto-install behavior described below.)
