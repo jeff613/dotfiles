@@ -10,7 +10,7 @@ Forked from [Kun Chen's dotfiles](https://github.com/kunchenguid/dotfiles) (vide
 Running the switch builds:
 
 - System settings (auto light/dark mode, file extensions shown, reversed scrolling)
-- Nix user packages (ripgrep, fd, fzf, jq, lazygit, Neovim, gh, tmux, Node 22, Hack Nerd Font)
+- Nix user packages (ripgrep, fd, fzf, jq, lazygit, Neovim, gh, tmux, Hack Nerd Font)
 - Shell (zsh, aliases, starship prompt)
 - Editor (Neovim config with the rose-pine moon theme)
 - Ghostty (the terminal, as a Homebrew cask)
@@ -148,6 +148,8 @@ You only run `./rebuild.sh` when you change something that isn't just a symlinke
 ## What this repo does not install
 
 The declared package lists stay minimal on purpose: config is what this repo is for, and applications that manage themselves gain nothing from being declared.
+
+Node is not declared either: `pi-coding-agent` depends on it, so Homebrew installs it on every machine anyway, and Homebrew's copy is the one that works for `npm install -g` (the Nix one has a read-only store prefix).
 
 Regular apps - browsers, editors, everything from the App Store - are installed by hand per machine.
 Only Ghostty is declared, because it is the terminal everything else happens in.

@@ -18,7 +18,6 @@ in
     neovim
     gh        # github cli
     tmux
-    nodejs_22 # node + npm
     # the font everything renders in
     nerd-fonts.hack
   ];
