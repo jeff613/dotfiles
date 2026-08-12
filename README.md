@@ -13,7 +13,7 @@ Running the switch builds:
 - Nix user packages (ripgrep, fd, fzf, jq, lazygit, Neovim, gh, tmux, Node 22, Hack Nerd Font)
 - Shell (zsh, aliases, starship prompt)
 - Editor (Neovim config with the rose-pine moon theme)
-- Apps (Ghostty, VS Code, Chrome as Homebrew casks)
+- Ghostty (the terminal, as a Homebrew cask)
 - Agent configs (Claude, Codex, opencode all share one AGENTS.md; my global Claude skills come along too)
 - Pi (installed via Homebrew) with a theme, local extensions, generic UI settings and model overrides, plus three deliberately pinned third-party Pi packages
 
@@ -145,9 +145,15 @@ The files under `home/` are the real files - editing them here is editing your l
 `home.nix` uses `mkOutOfStoreSymlink` to point paths like `~/.config/nvim` straight at `home/.config/nvim` in this repo, so the two never drift out of sync.
 You only run `./rebuild.sh` when you change something that isn't just a symlinked file, like a package list or a system default.
 
-## Coding agents
+## What this repo does not install
 
-Claude Code and Codex are deliberately **not** declared here.
+The declared package lists stay minimal on purpose: config is what this repo is for, and applications that manage themselves gain nothing from being declared.
+
+Regular apps - browsers, editors, everything from the App Store - are installed by hand per machine.
+Only Ghostty is declared, because it is the terminal everything else happens in.
+Chrome and VS Code were dropped deliberately: they self-update in place (Homebrew even flags them `auto_updates` and stops managing their versions), so declaring them only ever mattered for the very first install.
+
+Claude Code and Codex are deliberately not declared either, for a stronger reason.
 Both ship their own updaters that install into `~/.local/share/claude` and `~/.codex/packages` and repoint `~/.local/bin`, so a Homebrew copy is shadowed on the first self-update and then sits there getting stale.
 Install each one with its vendor's own installer on a new machine, then let it update itself.
 
