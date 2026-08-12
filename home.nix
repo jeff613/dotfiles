@@ -34,7 +34,9 @@ in
       [ -f ~/.zshrc.local ] && source ~/.zshrc.local
     '';
     shellAliases = {
-      cc = "claude";
+      # Sessions start in auto mode (settings.json); this only makes bypass
+      # reachable mid-session via the Shift+Tab cycle.
+      cc = "claude --allow-dangerously-skip-permissions";
       co = "codex";
     };
   };
