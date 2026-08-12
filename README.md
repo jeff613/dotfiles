@@ -13,7 +13,7 @@ Running the switch builds:
 - Nix user packages (ripgrep, fd, fzf, jq, lazygit, Neovim, gh, tmux, Node 22, Hack Nerd Font)
 - Shell (zsh, aliases, starship prompt)
 - Editor (Neovim config with the rose-pine moon theme)
-- Apps (Ghostty, VS Code, Chrome, Claude Code as Homebrew casks)
+- Apps (Ghostty, VS Code, Chrome as Homebrew casks)
 - Agent configs (Claude, Codex, opencode all share one AGENTS.md; my global Claude skills come along too)
 - Pi (installed via Homebrew) with a theme, local extensions, generic UI settings and model overrides, plus three deliberately pinned third-party Pi packages
 
@@ -144,6 +144,14 @@ If you don't use it, just remove it from `brews` in your copy.
 The files under `home/` are the real files - editing them here is editing your live config, no rebuild needed to see the change in your editor.
 `home.nix` uses `mkOutOfStoreSymlink` to point paths like `~/.config/nvim` straight at `home/.config/nvim` in this repo, so the two never drift out of sync.
 You only run `./rebuild.sh` when you change something that isn't just a symlinked file, like a package list or a system default.
+
+## Coding agents
+
+Claude Code and Codex are deliberately **not** declared here.
+Both ship their own updaters that install into `~/.local/share/claude` and `~/.codex/packages` and repoint `~/.local/bin`, so a Homebrew copy is shadowed on the first self-update and then sits there getting stale.
+Install each one with its vendor's own installer on a new machine, then let it update itself.
+
+Their configuration *is* managed: `home/.claude/settings.json` and the shared `home/AGENTS.md` are symlinked into place before the agents are installed, so both pick up the right settings on first run.
 
 ## Claude skills and plugins
 

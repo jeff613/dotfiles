@@ -39,7 +39,6 @@
       "ghostty"
       "visual-studio-code"
       "google-chrome"
-      "claude-code"
     ];
   };
 }
