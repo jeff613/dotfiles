@@ -17,6 +17,7 @@ in
     lazygit
     neovim
     gh        # github cli
+    awscli2   # aws cli (the pilot box lives on ec2)
     tmux
     # the font everything renders in
     nerd-fonts.hack
